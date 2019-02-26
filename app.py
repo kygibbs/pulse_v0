@@ -5,25 +5,16 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from pymessenger.bot import Bot
 import os
 
-
 app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
 bot = Bot(ACCESS_TOKEN)
-db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
-# Create our database model
-class User(db.Model):
-    __tablename__ = "users"
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(120), unique=True)
+db = SQLAlchemy(app)
 
-    def __init__(self, username):
-        self.username = username
+from models import Message
 
-    def __repr__(self):
-        return '<Username %r>' % self.username
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
@@ -44,10 +35,26 @@ def receive_message():
                 #Facebook Messenger ID for user so we know where to send response back to
                 recipient_id = message['sender']['id']
                 if message['message'].get('text'):
+                    user = message['sender']['id']
+                    date = message['timestamp']
+                    m = message['message']['text']
+                    mes_db_text = Message(id=id,user=user,mes=m)
+
+                    db.session.add(mes_db_text)
+                    db.session.commit()
+
                     response_sent_text = get_message()
                     send_message(recipient_id, response_sent_text)
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
+                    user = message['sender']['id']
+                    date = message['timestamp']
+                    m = message['message']['attachments']['payload']['url']
+                    mes_db_attach = Message(id=id,user=user,mes=m)
+
+                    db.session.add(mes_db_attach)
+                    db.session.commit()
+
                     response_sent_nontext = get_message()
                     send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
