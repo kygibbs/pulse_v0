@@ -1,5 +1,5 @@
-Flask==0.12.2
+Flask==1.0
 pymessenger==0.0.7.0
 gunicorn==19.6.0
-Flask-SQLAlchemy==2.1
+Flask-SQLAlchemy==2.3
 Psycopg2==2.7
