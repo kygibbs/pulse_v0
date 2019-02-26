@@ -1,7 +1,7 @@
 #Python libraries that we need to import for our bot
 import random
 from flask import Flask, request
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from pymessenger.bot import Bot
 import os
 
