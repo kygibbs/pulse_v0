@@ -5,14 +5,12 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from pymessenger.bot import Bot
 import os
 
-db = SQLAlchemy(app)
-
 
 app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
 bot = Bot(ACCESS_TOKEN)
-
+db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 
 # Create our database model
