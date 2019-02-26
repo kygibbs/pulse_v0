@@ -1,12 +1,31 @@
 #Python libraries that we need to import for our bot
 import random
 from flask import Flask, request
+from flask.ext.sqlalchemy import SQLAlchemy
 from pymessenger.bot import Bot
 import os
+
+db = SQLAlchemy(app)
+
+
 app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
 bot = Bot(ACCESS_TOKEN)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+
+# Create our database model
+class User(db.Model):
+    __tablename__ = "users"
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120), unique=True)
+
+    def __init__(self, username):
+        self.username = username
+
+    def __repr__(self):
+        return '<Username %r>' % self.username
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
