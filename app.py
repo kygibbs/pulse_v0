@@ -37,7 +37,7 @@ def receive_message():
     if update_user==True:
         #use input from last message as the nickname for the users table
         recipient_id = request.get_json()['entry'][0]['messaging'][0]['sender']['id']
-        nickname = recipient_id = request.get_json()['entry'][0]['messaging'][0]['message']['text']
+        nickname = request.get_json()['entry'][0]['messaging'][0]['message']['text']
 
         user_update = User(user=recipient_id,name=nickname)
 
