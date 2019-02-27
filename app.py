@@ -54,7 +54,7 @@ def receive_message():
     else:
        output = request.get_json()
        for event in output['entry']:
-          if event.get('messaging')
+          if event.get('messaging'):
               messaging = event['messaging']
               for message in messaging:
                 if message.get('message'):
