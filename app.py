@@ -36,9 +36,9 @@ def receive_message():
                 recipient_id = message['sender']['id']
                 if message['message'].get('text'):
                     username = int(message['sender']['id'])
-                    datetime = message['timestamp']
+                    datetime = str(message['timestamp'])
                     m = message['message']['text']
-                    mes_db_text = Message(id=id,user=username,mes=m,date=datetime)
+                    mes_db_text = Message(unique_id=unique_id,user=username,mes=m,date=datetime)
 
                     db.session.add(mes_db_text)
                     db.session.commit()
@@ -48,9 +48,9 @@ def receive_message():
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
                     username = int(message['sender']['id'])
-                    datetime = message['timestamp']
+                    datetime = str(message['timestamp'])
                     m = message['message']['attachments']['payload']['url']
-                    mes_db_attach = Message(id=id,user=user,mes=m,date=datetime)
+                    mes_db_attach = Message(unique_id=unique_id,user=user,mes=m,date=datetime)
 
                     db.session.add(mes_db_attach)
                     db.session.commit()
