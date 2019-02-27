@@ -19,7 +19,7 @@ update_user = False
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
-def receive_message(update_user=update_user):
+def receive_message(update=update_user):
     if request.method == 'GET':
         """Before allowing people to message your bot, Facebook has implemented a verify token
         that confirms all requests that your bot receives came from Facebook."""
