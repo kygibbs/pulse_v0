@@ -20,14 +20,21 @@ from models import Message, User, Rating
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
-def receive_message(update=update_user):
+def receive_message():
     if request.method == 'GET':
         """Before allowing people to message your bot, Facebook has implemented a verify token
         that confirms all requests that your bot receives came from Facebook."""
         token_sent = request.args.get("hub.verify_token")
         return verify_fb_token(token_sent)
     #if the request was not get, it must be POST and we can just proceed with sending a message back to user
-    if update_user==True:
+#check if the user has already provided a nickname
+    if request.get_json()['entry']['messaging']['sender']['id'] not in session.query(users.user).all():
+
+        update_user=True
+
+        send_message(request.get_json()['entry']['messaging']['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
+
+    elif update_user==True:
         #use input from last message as the nickname for the users table
         recipient_id = request.get_json()['entry']['messaging']['sender']['id']
         nickname = recipient_id = request.get_json()['entry']['messaging']['message']['text']
@@ -44,14 +51,8 @@ def receive_message(update=update_user):
         send_message(recipient_id, 'Love that name! I have taken note of it!')
 
     else:
-        #check if the user has already provided a nickname
-        if request.get_json()['entry']['messaging']['sender']['id'] not in session.query(users.user).all():
 
-            update_user=True
-
-            send_message(request.get_json()['entry']['messaging']['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
-
-        elif request.get_json()['entry']['messaging']['message']['text']=='check in':
+        if request.get_json()['entry']['messaging']['message']['text']=='check in':
 
             query = session.query(ratings).filter(ratings.user==request.get_json()['entry']['messaging']['sender']['id']).order_by(ratings.date)
             rating_list = [i.rating for i in query.all()]
