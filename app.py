@@ -28,16 +28,16 @@ def receive_message():
         return verify_fb_token(token_sent)
     #if the request was not get, it must be POST and we can just proceed with sending a message back to user
 #check if the user has already provided a nickname
-    if request.get_json()['entry']['messaging']['sender']['id'] not in session.query(users.user).all():
+    if request.get_json()['entry'][0]['messaging']['sender']['id'] not in session.query(users.user).all():
 
         update_user=True
 
-        send_message(request.get_json()['entry']['messaging']['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
+        send_message(request.get_json()['entry'][0]['messaging']['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
 
     elif update_user==True:
         #use input from last message as the nickname for the users table
-        recipient_id = request.get_json()['entry']['messaging']['sender']['id']
-        nickname = recipient_id = request.get_json()['entry']['messaging']['message']['text']
+        recipient_id = request.get_json()['entry'][0]['messaging']['sender']['id']
+        nickname = recipient_id = request.get_json()['entry'][0]['messaging']['message']['text']
 
         user_update = User(user=recipient_id,name=nickname)
 
@@ -51,56 +51,46 @@ def receive_message():
         send_message(recipient_id, 'Love that name! I have taken note of it!')
 
     else:
+       output = request.get_json()
+       for event in output['entry']:
+          messaging = event['messaging']
+          for message in messaging:
+            if message.get('message'):
+                #Facebook Messenger ID for user so we know where to send response back to
+                recipient_id = message['sender']['id']
+                if message['message'].get('text'):
+                    username = str(message['sender']['id'])
+                    datetime = str(message['timestamp'])
+                    m = message['message']['text']
+                    mes_db_text = Message(user=username,mes=m,date=datetime)
 
-        if request.get_json()['entry']['messaging']['message']['text']=='check in':
+                    db.session.add(mes_db_text)
+                    db.session.commit()
 
-            query = session.query(ratings).filter(ratings.user==request.get_json()['entry']['messaging']['sender']['id']).order_by(ratings.date)
-            rating_list = [i.rating for i in query.all()]
+                    if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
+                        rating = float(m[:3])
+                    elif m[0].isdigit():
+                        rating = float(m[0])
 
-            send_message(request.get_json()['entry']['messaging']['sender']['id'],rating_list)
+                    rating_update = Rating(user=username,rating=rating,date=datetime)
 
-        else:
-            # get whatever message a user sent the bot
-           output = request.get_json()
-           for event in output['entry']:
-              messaging = event['messaging']
-              for message in messaging:
-                if message.get('message'):
-                    #Facebook Messenger ID for user so we know where to send response back to
-                    recipient_id = message['sender']['id']
-                    if message['message'].get('text'):
-                        username = str(message['sender']['id'])
-                        datetime = str(message['timestamp'])
-                        m = message['message']['text']
-                        mes_db_text = Message(user=username,mes=m,date=datetime)
+                    db.session.add(rating_update)
+                    db.session.commit()
 
-                        db.session.add(mes_db_text)
-                        db.session.commit()
+                    response_sent_text = get_message()
+                    send_message(recipient_id, response_sent_text)
+                #if user sends us a GIF, photo,video, or any other non-text item
+                if message['message'].get('attachments'):
+                    username = str(message['sender']['id'])
+                    datetime = str(message['timestamp'])
+                    m = message['message']['attachments']['payload']['url']
+                    mes_db_attach = Message(user=user,mes=m,date=datetime)
 
-                        if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
-                            rating = float(m[:3])
-                        elif m[0].isdigit():
-                            rating = float(m[0])
+                    db.session.add(mes_db_attach)
+                    db.session.commit()
 
-                        rating_update = Rating(user=username,rating=rating,date=datetime)
-
-                        db.session.add(rating_update)
-                        db.session.commit()
-
-                        response_sent_text = get_message()
-                        send_message(recipient_id, response_sent_text)
-                    #if user sends us a GIF, photo,video, or any other non-text item
-                    if message['message'].get('attachments'):
-                        username = str(message['sender']['id'])
-                        datetime = str(message['timestamp'])
-                        m = message['message']['attachments']['payload']['url']
-                        mes_db_attach = Message(user=user,mes=m,date=datetime)
-
-                        db.session.add(mes_db_attach)
-                        db.session.commit()
-
-                        response_sent_nontext = get_message()
-                        send_message(recipient_id, response_sent_nontext)
+                    response_sent_nontext = get_message()
+                    send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
 
 
