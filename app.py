@@ -29,7 +29,7 @@ def receive_message():
     #if the request was not get, it must be POST and we can just proceed with sending a message back to user
 #check if the user has already provided a nickname
     if str(request.get_json()['entry'][0]['messaging'][0]['sender']['id']) not in db.session.query(User.user).all():
-
+        global update_user
         update_user=True
 
         send_message(request.get_json()['entry'][0]['messaging'][0]['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
@@ -45,6 +45,7 @@ def receive_message():
         db.session.add(user_update)
         db.session.commit()
 
+        global update_user
         update_user=False
 
         #let the user know that the update was successful
