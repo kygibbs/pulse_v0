@@ -28,16 +28,16 @@ def receive_message():
         return verify_fb_token(token_sent)
     #if the request was not get, it must be POST and we can just proceed with sending a message back to user
 #check if the user has already provided a nickname
-    if request.get_json()['entry'][0]['messaging']['sender']['id'] not in session.query(users.user).all():
+    if request.get_json()['entry'][0]['messaging'][0]['sender']['id'] not in session.query(users.user).all():
 
         update_user=True
 
-        send_message(request.get_json()['entry'][0]['messaging']['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
+        send_message(request.get_json()['entry'][0]['messaging'][0]['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
 
     elif update_user==True:
         #use input from last message as the nickname for the users table
-        recipient_id = request.get_json()['entry'][0]['messaging']['sender']['id']
-        nickname = recipient_id = request.get_json()['entry'][0]['messaging']['message']['text']
+        recipient_id = request.get_json()['entry'][0]['messaging'][0]['sender']['id']
+        nickname = recipient_id = request.get_json()['entry'][0]['messaging'][0]['message']['text']
 
         user_update = User(user=recipient_id,name=nickname)
 
