@@ -35,10 +35,10 @@ def receive_message():
                 #Facebook Messenger ID for user so we know where to send response back to
                 recipient_id = message['sender']['id']
                 if message['message'].get('text'):
-                    user = message['sender']['id']
-                    date = message['timestamp']
+                    username = int(message['sender']['id'])
+                    datetime = message['timestamp']
                     m = message['message']['text']
-                    mes_db_text = Message(id=id,user=user,mes=m)
+                    mes_db_text = Message(id=id,user=username,mes=m,date=datetime)
 
                     db.session.add(mes_db_text)
                     db.session.commit()
@@ -47,10 +47,10 @@ def receive_message():
                     send_message(recipient_id, response_sent_text)
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
-                    user = message['sender']['id']
-                    date = message['timestamp']
+                    username = int(message['sender']['id'])
+                    datetime = message['timestamp']
                     m = message['message']['attachments']['payload']['url']
-                    mes_db_attach = Message(id=id,user=user,mes=m)
+                    mes_db_attach = Message(id=id,user=user,mes=m,date=datetime)
 
                     db.session.add(mes_db_attach)
                     db.session.commit()
