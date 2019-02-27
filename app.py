@@ -5,6 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from pymessenger.bot import Bot
 import os
 
+global update_user
+update_user = False
+
 app = Flask(__name__)
 ACCESS_TOKEN = 'EAAESRJliwPcBAJKIOMg1WKY437OoQNWYYoD9AJompasaK2FTm5WoB2XvfyidU2ZCJKBG7SC8vCAk4DtZBX98GVX7ZBF6V4eDTf48DzD9RdgTZA7TRmT6sR4vE3m0Ye43VvLtW6vaGyR3btsVssxkCZA5dsZB9oFBhoF5GxvKHghwZDZD'
 VERIFY_TOKEN = 'TESTINGTOKEN'
@@ -14,9 +17,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://omytmjqkfbjiyv:30dcaab682348
 db = SQLAlchemy(app)
 
 from models import Message, User, Rating
-
-global update_user
-update_user = False
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
