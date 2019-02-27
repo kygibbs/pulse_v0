@@ -34,7 +34,7 @@ def receive_message():
 
         send_message(request.get_json()['entry'][0]['messaging'][0]['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
 
-    elif update_user==True:
+    if update_user==True:
         #use input from last message as the nickname for the users table
         recipient_id = request.get_json()['entry'][0]['messaging'][0]['sender']['id']
         nickname = recipient_id = request.get_json()['entry'][0]['messaging'][0]['message']['text']
