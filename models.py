@@ -9,4 +9,24 @@ class Message(db.Model):
     date = db.Column(db.String(240))
 
     def __repr__(self):
-        return '<Message %r>' % (self.nickname)
+        return '<Message %r>' % (self.user)
+
+class User(db.Model):
+    __tablename__ = 'users'
+
+    user = db.Column(db.String(240), primary_key=True)
+    name = db.Column(db.String(240))
+
+    def __repr__(self):
+        return '<User %r>' % (self.name)
+
+class Rating(db.Model):
+    __tablename__ = 'ratings'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(240))
+    rating = db.Column(db.Float)
+    date = db.Column(db.String(240))
+
+    def __repr__(self):
+        return '<Rating %r>' % (self.rating)
