@@ -13,8 +13,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://omytmjqkfbjiyv:30dcaab682348
 
 db = SQLAlchemy(app)
 
-from models import Message, Users, Rating
+from models import Message, User, Rating
 
+global update_user
 update_user = False
 
 #We will receive messages that Facebook sends our bot at this endpoint
@@ -37,7 +38,6 @@ def receive_message(update=update_user):
         db.session.add(user_update)
         db.session.commit()
 
-        global update_user
         update_user=False
 
         #let the user know that the update was successful
@@ -47,7 +47,6 @@ def receive_message(update=update_user):
         #check if the user has already provided a nickname
         if request.get_json()['entry']['messaging']['sender']['id'] not in session.query(users.user).all():
 
-            global update_user
             update_user=True
 
             send_message(request.get_json()['entry']['messaging']['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
