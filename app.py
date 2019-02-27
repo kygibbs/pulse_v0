@@ -26,30 +26,31 @@ def receive_message():
         that confirms all requests that your bot receives came from Facebook."""
         token_sent = request.args.get("hub.verify_token")
         return verify_fb_token(token_sent)
-    #if the request was not get, it must be POST and we can just proceed with sending a message back to user
-#check if the user has already provided a nickname
-    if str(request.get_json()['entry'][0]['messaging'][0]['sender']['id']) not in db.session.query(User.user).all():
-        global update_user
-        update_user=True
+#     if the request was not get, it must be POST and we can just proceed with sending a message back to user
+# check if the user has already provided a nickname
 
-        send_message(request.get_json()['entry'][0]['messaging'][0]['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
-
-    if update_user==True:
-        #use input from last message as the nickname for the users table
-        recipient_id = request.get_json()['entry'][0]['messaging'][0]['sender']['id']
-        nickname = request.get_json()['entry'][0]['messaging'][0]['message']['text']
-
-        user_update = User(user=recipient_id,name=nickname)
-
-        #commit the nickname to the database
-        db.session.add(user_update)
-        db.session.commit()
-
-        global update_user
-        update_user=False
-
-        #let the user know that the update was successful
-        send_message(recipient_id, 'Love that name! I have taken note of it!')
+    # if str(request.get_json()['entry'][0]['messaging'][0]['sender']['id']) not in db.session.query(User.user).all():
+    #     global update_user
+    #     update_user=True
+    #
+    #     send_message(request.get_json()['entry'][0]['messaging'][0]['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
+    #
+    # if update_user==True:
+    #     #use input from last message as the nickname for the users table
+    #     recipient_id = request.get_json()['entry'][0]['messaging'][0]['sender']['id']
+    #     nickname = request.get_json()['entry'][0]['messaging'][0]['message']['text']
+    #
+    #     user_update = User(user=recipient_id,name=nickname)
+    #
+    #     #commit the nickname to the database
+    #     db.session.add(user_update)
+    #     db.session.commit()
+    #
+    #     global update_user
+    #     update_user=False
+    #
+    #     #let the user know that the update was successful
+    #     send_message(recipient_id, 'Love that name! I have taken note of it!')
 
     else:
        output = request.get_json()
@@ -60,7 +61,7 @@ def receive_message():
                 #Facebook Messenger ID for user so we know where to send response back to
                 recipient_id = message['sender']['id']
                 if message['message'].get('text'):
-                    username = str(message['sender']['id'])
+                    username = str(recipient_id)
                     datetime = str(message['timestamp'])
                     m = message['message']['text']
                     mes_db_text = Message(user=username,mes=m,date=datetime)
@@ -82,10 +83,10 @@ def receive_message():
                     send_message(recipient_id, response_sent_text)
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
-                    username = str(message['sender']['id'])
+                    username = str(recipient_id)
                     datetime = str(message['timestamp'])
                     m = message['message']['attachments']['payload']['url']
-                    mes_db_attach = Message(user=user,mes=m,date=datetime)
+                    mes_db_attach = Message(user=username,mes=m,date=datetime)
 
                     db.session.add(mes_db_attach)
                     db.session.commit()
