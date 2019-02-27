@@ -5,9 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from pymessenger.bot import Bot
 import os
 
-global update_user
-update_user = False
-
 app = Flask(__name__)
 ACCESS_TOKEN = 'EAAESRJliwPcBAAq875avBNaw8BbzZAOEcNK9BIC7stSw7xYla4YPdUqPzjQdzCSJKD3pn2pQ5P01AdgOyGGy9ZAA4OyVktLg0uDaDZBR9ZA8w4M948EZBysoN4cEgYvC9DuAd7FaZA4XLiTbD8fNj1aS8PGmZAaAydiDkUwwM8fYQZDZD'
 VERIFY_TOKEN = 'TESTINGTOKEN'
@@ -57,7 +54,7 @@ def receive_message():
           messaging = event['messaging']
           for message in messaging:
             if message.get('message'):
-                #Facebook Messenger ID for user so we know where to send response back to
+            
                 recipient_id = message['sender']['id']
                 if message['message'].get('text'):
                     username = str(recipient_id)
