@@ -60,24 +60,14 @@ def receive_message():
                     username = str(recipient_id)
                     datetime = str(message['timestamp'])
                     m = message['message']['text']
-                    mes_db_text = Message(user=username,mes=m,date=datetime)
 
-                    db.session.add(mes_db_text)
-                    db.session.commit()
+                    update_messages(username,mes=m,datetime)
 
-                    rating = 'null'
+                    #check if message has rating and update rating db if so
+                    check_rating(m)
 
-                    if (len(m) >= 3):
-                        if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
-                            rating = float(m[:3])
-                    elif m[0].isdigit():
-                        rating = float(m[0])
-                        
-                    if rating != 'null':
-                        rating_update = Rating(user=username,rating=rating,date=datetime)
-
-                        db.session.add(rating_update)
-                        db.session.commit()
+                    #check if message is command
+                    check_command(messsage=m,username)
 
                     response_sent_text = get_message()
                     send_message(recipient_id, response_sent_text)
@@ -86,17 +76,32 @@ def receive_message():
                     username = str(recipient_id)
                     datetime = str(message['timestamp'])
                     m = message['message']['attachments']['payload']['url']
-                    mes_db_attach = Message(user=username,mes=m,date=datetime)
 
-                    db.session.add(mes_db_attach)
-                    db.session.commit()
+                    update_messages(username,mes=m,datetime)
 
                     response_sent_nontext = get_message()
                     send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
 
 
+#checks if the message is a command
+def check_command(message,username):
+    length = len(message)
+    if length > len('set name'):
+        if message[:8]=='set name':
+            nickname = message[9:]
+            update_username(nickname,username)
+        else: pass
+    else: pass
 
+#update username in database
+def update_username(nickname,username):
+    user_update = User(user=username,name=nickname)
+
+    db.session.add(user_update)
+    db.session.commit()
+
+#verify facebook token upon GET request
 def verify_fb_token(token_sent):
     #take token sent by facebook and verify it matches the verify token you sent
     #if they match, allow the request, else return an error
@@ -104,6 +109,32 @@ def verify_fb_token(token_sent):
         return request.args.get("hub.challenge")
     return 'Invalid verification token'
 
+#updates rating in dataabse
+def update_rating(username, rating, datetime):
+    rating_update = Rating(user=username,rating=rating,date=datetime)
+
+    db.session.add(rating_update)
+    db.session.commit()
+
+#updates messages in database
+def update_messages(username, mes, datetime):
+    message_to_commit = Message(user=username,mes=message,date=datetime)
+
+    db.session.add(mes_db_text)
+    db.session.commit()
+
+#check if message is rating
+def check_rating(message):
+    rating = 'null'
+    if (len(message) >= 3):
+        if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
+            rating = float(m[:3])
+    elif m[0].isdigit():
+        rating = float(m[0])
+    else:
+        rating = rating
+    if rating != 'null':
+        update_rating(username, rating, datetime)
 
 #chooses a random message to send to the user
 def get_message():
