@@ -6,7 +6,7 @@ from pymessenger.bot import Bot
 import os
 
 app = Flask(__name__)
-ACCESS_TOKEN = 'EAAOTUZB2wuoYBAHIMbZBnBo0gD3O2uqetFEEl6Y17Et4GjfEIz0FRDhWMqBIDcmExEkzDDU4PSbAksxjJcziVwEhC2bZA7oDnCTZBGIt4VdY9ZBFy1Nm7FNMCfl1rnr0UZC1uTjqh0tXFdwP1tRj44P8PIjddrcvraUYa1jwrIVgZDZD'
+ACCESS_TOKEN = 'EAAOTUZB2wuoYBACxcMXmeBYvskTCRZCdTxxMkuBlBiABbX3RyuFQCWXH4jjfBDVftJ1dnp5e7pAjrYMjTOa9cxdqatiWboq0GF3xpMZBL7DE9HgM5joSZCnH2SecFaa5bk6HKSZCQGqSBH28gULUrC4umWBJGK9EpVcZCRCmyhNQZDZD'
 VERIFY_TOKEN = 'TESTINGTOKEN'
 bot = Bot(ACCESS_TOKEN)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://uhlfsytbmtlqdi:82d98d9f0a1f9ce38d3c0781a9941baf4f34f2ed52dbc4146ee75cffe42fc86d@ec2-46-137-170-51.eu-west-1.compute.amazonaws.com:5432/d3amnhpqd9452k'
