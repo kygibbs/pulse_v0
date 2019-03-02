@@ -50,7 +50,7 @@ def receive_message():
                 if message['message'].get('attachments'):
                     username = str(recipient_id)
                     datetime = str(message['timestamp'])
-                    m = message['message']['attachment']['payload']['url']
+                    m = message['message']['attachments'][0]['payload']['url']
 
                     update_messages(username,m,datetime)
 
