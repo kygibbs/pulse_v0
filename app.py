@@ -65,8 +65,9 @@ def receive_message():
                     db.session.add(mes_db_text)
                     db.session.commit()
 
-                    if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
-                        rating = float(m[:3])
+                    if (len(m) >= 3):
+                        if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
+                            rating = float(m[:3])
                     elif m[0].isdigit():
                         rating = float(m[0])
 
