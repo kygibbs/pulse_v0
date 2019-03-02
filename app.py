@@ -67,7 +67,7 @@ def receive_message():
                     check_rating(m)
 
                     #check if message is command
-                    check_command(messsage=m,username)
+                    check_command(m,username)
 
                     response_sent_text = get_message()
                     send_message(recipient_id, response_sent_text)
@@ -77,7 +77,7 @@ def receive_message():
                     datetime = str(message['timestamp'])
                     m = message['message']['attachments']['payload']['url']
 
-                    update_messages(username,mes=m,datetime)
+                    update_messages(username,m,datetime)
 
                     response_sent_nontext = get_message()
                     send_message(recipient_id, response_sent_nontext)
