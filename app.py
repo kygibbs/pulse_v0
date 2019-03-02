@@ -63,11 +63,12 @@ def receive_message():
 def check_command(message,username):
     length = len(message)
     if length > len('set name'):
-        if message[:8]=='set name':
-            nickname = message[9:]
-            update_username(nickname,username)
-            send_message(username,"Thanks, love that name!")
-            return True
+        if (message[:8]=='set name'):
+            if username not in db.session.query(User.user).all():
+                nickname = message[9:]
+                update_username(nickname,username)
+                return True
+            else: pass
         else: pass
     else: pass
     return False
