@@ -91,6 +91,7 @@ def check_command(message,username):
         if message[:8]=='set name':
             nickname = message[9:]
             update_username(nickname,username)
+            send_message(username,"Thanks, love that name!")
         else: pass
     else: pass
 
