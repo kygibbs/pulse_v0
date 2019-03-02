@@ -118,7 +118,7 @@ def update_rating(username, rating, datetime):
 
 #updates messages in database
 def update_messages(username, mes, datetime):
-    message_to_commit = Message(user=username,mes=message,date=datetime)
+    message_to_commit = Message(user=username,mes=mes,date=datetime)
 
     db.session.add(mes_db_text)
     db.session.commit()
