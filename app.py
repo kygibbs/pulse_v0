@@ -23,31 +23,6 @@ def receive_message():
         that confirms all requests that your bot receives came from Facebook."""
         token_sent = request.args.get("hub.verify_token")
         return verify_fb_token(token_sent)
-#     if the request was not get, it must be POST and we can just proceed with sending a message back to user
-# check if the user has already provided a nickname
-
-    # if str(request.get_json()['entry'][0]['messaging'][0]['sender']['id']) not in db.session.query(User.user).all():
-    #     global update_user
-    #     update_user=True
-    #
-    #     send_message(request.get_json()['entry'][0]['messaging'][0]['sender']['id'],'I do not believe we\'ve met - what is your nickname?')
-    #
-    # if update_user==True:
-    #     #use input from last message as the nickname for the users table
-    #     recipient_id = request.get_json()['entry'][0]['messaging'][0]['sender']['id']
-    #     nickname = request.get_json()['entry'][0]['messaging'][0]['message']['text']
-    #
-    #     user_update = User(user=recipient_id,name=nickname)
-    #
-    #     #commit the nickname to the database
-    #     db.session.add(user_update)
-    #     db.session.commit()
-    #
-    #     global update_user
-    #     update_user=False
-    #
-    #     #let the user know that the update was successful
-    #     send_message(recipient_id, 'Love that name! I have taken note of it!')
     else:
        output = request.get_json()
        for event in output['entry']:
@@ -64,12 +39,12 @@ def receive_message():
                     update_messages(username,m,datetime)
 
                     #check if message has rating and update rating db if so
-                    check_rating(m,username,datetime)
+                    rating = check_rating(m,username,datetime)
+                    command = check_command()
 
-                    #check if message is command
-                    check_command(m,username)
+                    key = check_key(rating,command)
 
-                    response_sent_text = get_message()
+                    response_sent_text = get_message(key)
                     send_message(recipient_id, response_sent_text)
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
@@ -79,7 +54,7 @@ def receive_message():
 
                     update_messages(username,m,datetime)
 
-                    response_sent_nontext = get_message()
+                    response_sent_nontext = get_message(4)
                     send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
 
@@ -92,8 +67,18 @@ def check_command(message,username):
             nickname = message[9:]
             update_username(nickname,username)
             send_message(username,"Thanks, love that name!")
+            return True
         else: pass
     else: pass
+    return False
+
+#check which key to return
+def check_key(rating,command):
+    if rating == True:
+        return 1
+    if command == True:
+        return 3
+    else: return 2
 
 #update username in database
 def update_username(nickname,username):
@@ -136,10 +121,13 @@ def check_rating(message,username,datetime):
         rating = rating
     if rating != 'null':
         update_rating(username, rating, datetime)
+        return True
+    return False
 
-#chooses a random message to send to the user
-def get_message():
-    return "Thanks for sharing, let me know how you are doing later"
+#chooses a message to the user depending on what they sent before
+def get_message(key):
+    message_dict = {1:"Thanks for sharing", 2:"Interesting", 3:"Thanks! Love that name!",4:"Oh la la!"}
+    return message_dict(key)
 
 #uses PyMessenger to send response to user
 def send_message(recipient_id, response):
