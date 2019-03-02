@@ -61,7 +61,7 @@ def receive_message():
                     datetime = str(message['timestamp'])
                     m = message['message']['text']
 
-                    update_messages(username,mes=m,datetime)
+                    update_messages(username,m,datetime)
 
                     #check if message has rating and update rating db if so
                     check_rating(m)
