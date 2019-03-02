@@ -120,7 +120,7 @@ def update_rating(username, rating, datetime):
 def update_messages(username, mes, datetime):
     message_to_commit = Message(user=username,mes=mes,date=datetime)
 
-    db.session.add(mes_db_text)
+    db.session.add(message_to_commit)
     db.session.commit()
 
 #check if message is rating
