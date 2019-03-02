@@ -64,7 +64,7 @@ def check_command(message,username):
     length = len(message)
     if length > len('set name'):
         if (message[:8]=='set name'):
-            if str(username) not in db.session.query(User.user).all():
+            if str(username) not in [str(x) for x in db.session.query(User.user).all()]:
                 nickname = message[9:]
                 update_username(nickname,username)
                 return True
