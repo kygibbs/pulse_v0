@@ -65,16 +65,19 @@ def receive_message():
                     db.session.add(mes_db_text)
                     db.session.commit()
 
+                    rating = 'null'
+
                     if (len(m) >= 3):
                         if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
                             rating = float(m[:3])
                     elif m[0].isdigit():
                         rating = float(m[0])
+                        
+                    if rating != 'null':
+                        rating_update = Rating(user=username,rating=rating,date=datetime)
 
-                    rating_update = Rating(user=username,rating=rating,date=datetime)
-
-                    db.session.add(rating_update)
-                    db.session.commit()
+                        db.session.add(rating_update)
+                        db.session.commit()
 
                     response_sent_text = get_message()
                     send_message(recipient_id, response_sent_text)
