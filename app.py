@@ -128,9 +128,9 @@ def check_rating(message):
     rating = 'null'
     if (len(message) >= 3):
         if (message[0].isdigit()) & (message[1]=='.') & (message[2].isdigit()):
-            rating = float(m[:3])
+            rating = float(message[:3])
     elif message[0].isdigit():
-        rating = float(m[0])
+        rating = float(message[0])
     else:
         rating = rating
     if rating != 'null':
