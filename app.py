@@ -127,7 +127,7 @@ def check_rating(message,username,datetime):
 #chooses a message to the user depending on what they sent before
 def get_message(key):
     message_dict = {1:"Thanks for sharing", 2:"Interesting", 3:"Thanks! Love that name!",4:"Oh la la!"}
-    return message_dict(key)
+    return message_dict[key]
 
 #uses PyMessenger to send response to user
 def send_message(recipient_id, response):
