@@ -127,9 +127,9 @@ def update_messages(username, mes, datetime):
 def check_rating(message):
     rating = 'null'
     if (len(message) >= 3):
-        if (m[0].isdigit()) & (m[1]=='.') & (m[2].isdigit()):
+        if (message[0].isdigit()) & (message[1]=='.') & (message[2].isdigit()):
             rating = float(m[:3])
-    elif m[0].isdigit():
+    elif message[0].isdigit():
         rating = float(m[0])
     else:
         rating = rating
