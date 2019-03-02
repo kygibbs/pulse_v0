@@ -40,7 +40,7 @@ def receive_message():
 
                     #check if message has rating and update rating db if so
                     rating = check_rating(m,username,datetime)
-                    command = check_command()
+                    command = check_command(m,username)
 
                     key = check_key(rating,command)
 
