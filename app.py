@@ -64,7 +64,7 @@ def receive_message():
                     update_messages(username,m,datetime)
 
                     #check if message has rating and update rating db if so
-                    check_rating(m)
+                    check_rating(m,username,datetime)
 
                     #check if message is command
                     check_command(m,username)
@@ -125,7 +125,7 @@ def update_messages(username, mes, datetime):
     db.session.commit()
 
 #check if message is rating
-def check_rating(message):
+def check_rating(message,username,datetime):
     rating = 'null'
     if (len(message) >= 3):
         if (message[0].isdigit()) & (message[1]=='.') & (message[2].isdigit()):
