@@ -6,14 +6,14 @@ from pymessenger.bot import Bot
 import os
 
 app = Flask(__name__)
-ACCESS_TOKEN = 'EAAOTUZB2wuoYBAJgkPljxDaU2Vvwk1AjDS6LD7xiPfxe0MB1Ki7sBbPaaW1i4M4p1q1B34dMMNciPnuANlEi785Wvxe9e72HLz5fVQ2elZAEBLjZAbksGbyzm0G4XvY6gQ10C3IcUPAXgm54SKeZAgnhmvWmoi4MwkMRzHZBi7QZDZD'
+ACCESS_TOKEN = 'EAAOTUZB2wuoYBAJFdgWTY7Jz2Bs0mvpJQATqW1aCzsZAZCR1zWE6hXiVINEeIbRvHbDkirZCorgq0H6ydh4aeDJBgt9rqNc2By9jUFbYkNOJ8kHxfL7uNqdobhgJ1bkXUpZCZBiEhBRrVMKZAfHbh4ehZBI2ra3hr3CFQykr3J6ApQZDZD'
 VERIFY_TOKEN = 'TESTINGTOKEN'
 bot = Bot(ACCESS_TOKEN)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://wrgfrthoobosxz:da8d915c0fafc5322c1f8c331acd269acbf4309bc7ff14af2f0a6797c0914655@ec2-54-228-212-134.eu-west-1.compute.amazonaws.com:5432/d1emremnjg5gsv'
 
 db = SQLAlchemy(app)
 
-from models import Message, User, Rating, Follower
+from models import Message, User, Rating
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
@@ -58,6 +58,7 @@ def receive_message():
                     send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
 
+
 #checks if the message is a command
 def check_command(message,username):
     length = len(message)
@@ -72,7 +73,7 @@ def check_command(message,username):
     if length > len('tune in'):
         if (message[:7]=='tune in'):
             friend = message[8:]
-            if friend not in (Follower.query.with_entities(Follower.followed_nickname).filter_by(user=username).all()):
+            if (Follower.query.filter_by(user=username).filter_by(followed_nickname=friend).count()==0):
                 update_followers(friend,username)
                 return True
             else: pass
@@ -105,7 +106,6 @@ def verify_fb_token(token_sent):
 
 #updates rating in dataabse
 def update_rating(username, rating, datetime):
-
     rating_update = Rating(user=username,rating=rating,date=datetime)
 
     db.session.add(rating_update)
@@ -113,7 +113,6 @@ def update_rating(username, rating, datetime):
 
 #updates messages in database
 def update_messages(username, mes, datetime):
-
     message_to_commit = Message(user=username,mes=mes,date=datetime)
 
     db.session.add(message_to_commit)
@@ -126,7 +125,6 @@ def update_followers(friendname,username):
 
     db.session.add(new_follower)
     db.session.commit()
-
 
 #check if message is rating
 def check_rating(message,username,datetime):
