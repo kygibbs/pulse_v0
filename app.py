@@ -73,7 +73,7 @@ def check_command(message,username):
     if length > len('tune in'):
         if (message[:7]=='tune in'):
             friend = message[8:]
-            if friend not in (Follower.query.with_entities(Follower.followed_nickname).filter_by(user=username).all()):
+            if (Follower.query.filter_by(user=username).filter_by(followed_nickname=friend).count()==0):
                 update_followers(friend,username)
                 return True
             else: pass
