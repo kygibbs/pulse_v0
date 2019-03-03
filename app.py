@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://uhlfsytbmtlqdi:82d98d9f0a1f9
 
 db = SQLAlchemy(app)
 
-from models import Message, User, Rating
+from models import Message, User, Rating, Follower
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
@@ -58,7 +58,6 @@ def receive_message():
                     send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
 
-
 #checks if the message is a command
 def check_command(message,username):
     length = len(message)
@@ -67,6 +66,14 @@ def check_command(message,username):
             if (User.query.filter_by(user=username).count()==0):
                 nickname = message[9:]
                 update_username(nickname,username)
+                return True
+            else: pass
+        else: pass
+    if length > len('tune in'):
+        if (message[:7]=='tune in'):
+            friend = message[8:]
+            if friend not in (Follower.query.with_entities(Follower.followed_nickname).filter_by(user=username).all()):
+                update_followers(friend,username)
                 return True
             else: pass
         else: pass
@@ -98,6 +105,7 @@ def verify_fb_token(token_sent):
 
 #updates rating in dataabse
 def update_rating(username, rating, datetime):
+
     rating_update = Rating(user=username,rating=rating,date=datetime)
 
     db.session.add(rating_update)
@@ -105,10 +113,20 @@ def update_rating(username, rating, datetime):
 
 #updates messages in database
 def update_messages(username, mes, datetime):
+
     message_to_commit = Message(user=username,mes=mes,date=datetime)
 
     db.session.add(message_to_commit)
     db.session.commit()
+
+#update Followers
+def update_followers(friendname,username):
+
+    new_follower = Follower(user=username,followed_nickname=friendname)
+
+    db.session.add(new_follower)
+    db.session.commit()
+
 
 #check if message is rating
 def check_rating(message,username,datetime):
@@ -135,6 +153,8 @@ def send_message(recipient_id, response):
     #sends user the text message provided via input response parameter
     bot.send_text_message(recipient_id, response)
     return "success"
+
+def follow_friend_
 
 if __name__ == "__main__":
     app.run()

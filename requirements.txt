@@ -6,3 +6,4 @@ Psycopg2==2.7.3.2
 Flask-Script==2.0.6
 Flask-Migrate==2.4.0
 alembic==1.0.7
+APScheduler==3.0.0
