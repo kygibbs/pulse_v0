@@ -11,6 +11,16 @@ class Message(db.Model):
     def __repr__(self):
         return '<Message %r>' % (self.user)
 
+class Follower(db.Model):
+    __tablename__ = 'followers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(240))
+    followed_nickname = db.Column(db.String(240))
+
+    def __repr__(self):
+        return '<Followers %r>' % (self.followed)
+
 class User(db.Model):
     __tablename__ = 'users'
 

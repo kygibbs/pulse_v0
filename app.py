@@ -70,6 +70,14 @@ def check_command(message,username):
                 return True
             else: pass
         else: pass
+    if length > len('tune in'):
+        if (message[:7]=='tune in'):
+            friend = message[8:]
+            if friend not in (Follower.query.with_entities(Follower.followed_nickname).filter_by(user=username).all()):
+                update_followers(friend,username)
+                return True
+            else: pass
+        else: pass
     else: pass
     return False
 
@@ -108,6 +116,14 @@ def update_messages(username, mes, datetime):
     message_to_commit = Message(user=username,mes=mes,date=datetime)
 
     db.session.add(message_to_commit)
+    db.session.commit()
+
+#update Followers
+def update_followers(friendname,username):
+
+    new_follower = Follower(user=username,followed_nickname=friendname)
+
+    db.session.add(new_follower)
     db.session.commit()
 
 #check if message is rating
