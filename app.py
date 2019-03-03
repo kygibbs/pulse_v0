@@ -6,10 +6,10 @@ from pymessenger.bot import Bot
 import os
 
 app = Flask(__name__)
-ACCESS_TOKEN = 'EAAOTUZB2wuoYBAJgkPljxDaU2Vvwk1AjDS6LD7xiPfxe0MB1Ki7sBbPaaW1i4M4p1q1B34dMMNciPnuANlEi785Wvxe9e72HLz5fVQ2elZAEBLjZAbksGbyzm0G4XvY6gQ10C3IcUPAXgm54SKeZAgnhmvWmoi4MwkMRzHZBi7QZDZD'
+ACCESS_TOKEN = 'EAAOTUZB2wuoYBAJFdgWTY7Jz2Bs0mvpJQATqW1aCzsZAZCR1zWE6hXiVINEeIbRvHbDkirZCorgq0H6ydh4aeDJBgt9rqNc2By9jUFbYkNOJ8kHxfL7uNqdobhgJ1bkXUpZCZBiEhBRrVMKZAfHbh4ehZBI2ra3hr3CFQykr3J6ApQZDZD'
 VERIFY_TOKEN = 'TESTINGTOKEN'
 bot = Bot(ACCESS_TOKEN)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://uhlfsytbmtlqdi:82d98d9f0a1f9ce38d3c0781a9941baf4f34f2ed52dbc4146ee75cffe42fc86d@ec2-46-137-170-51.eu-west-1.compute.amazonaws.com:5432/d3amnhpqd9452k'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://wrgfrthoobosxz:da8d915c0fafc5322c1f8c331acd269acbf4309bc7ff14af2f0a6797c0914655@ec2-54-228-212-134.eu-west-1.compute.amazonaws.com:5432/d1emremnjg5gsv'
 
 db = SQLAlchemy(app)
 
