@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://wrgfrthoobosxz:da8d915c0fafc
 
 db = SQLAlchemy(app)
 
-from models import Message, User, Rating
+from models import Message, User, Rating, Follower
 
 #We will receive messages that Facebook sends our bot at this endpoint
 @app.route("/", methods=['GET', 'POST'])
