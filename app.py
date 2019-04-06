@@ -176,7 +176,7 @@ def check_rating(message,username,datetime):
 #     return message_dict[key]
 
 def Proliferate(recipient_id,response,type=None):
-    sender = User.query.filter_by(user=recipient_id).with_entities(User.name).first()[0]
+    sender = User.query.filter_by(user=recipient_id).with_entities(User.name).first()
     for user in User.query.all():
         if user.user == recipient_id:
             if type == None:
