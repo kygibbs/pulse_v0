@@ -152,7 +152,7 @@ def check_rating(message,username,datetime):
 #     return message_dict[key]
 
 def Proliferate(sender_name,response,type=None):
-    for user in User.query.all()
+    for user in User.query.all():
         if user.user != recipient_id:
             if type == None:
                 message = "{}: {}".format(sender,response)
