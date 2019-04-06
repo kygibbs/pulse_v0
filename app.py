@@ -37,7 +37,7 @@ def receive_message():
                         m = message['message']['text']
 
                         # key = check_key(rating,command)
-                        if len(User.query.filter_by(user=str(recipient_id)).all()))>0:
+                        if len(User.query.filter_by(user=str(recipient_id)).all())>0:
                             Proliferate(recipient_id,m)
                         else:
                             bot.send_text_message(recipient_id,"please add a username with 'set name'")
