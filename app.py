@@ -187,9 +187,8 @@ def Proliferate(recipient_id,response,type=None):
                 message = "{}: {}".format(sender,response)
                 bot.send_text_message(user.user,message)
             else:
-                message_1 = "{}: ".format(sender)
+                message_1 = "{}: {}".format(sender,response)
                 bot.send_text_message(user.user,message_1)
-                bot.send_attachment_url(user.user,type,response)
 
 
 # #uses PyMessenger to send response to user
