@@ -71,7 +71,7 @@ def receive_message():
 #checks if the message is a command
 def check_command(message,username):
     length = len(message)
-    self_name = User.query.filter_by(user=username).with_entities(User.name).first()[0]
+    #self_name = User.query.filter_by(user=username).with_entities(User.name).first()[0]
     #SET NAME
     if length > len('set name'):
         if (message[:8]=='set name'):
@@ -106,6 +106,7 @@ def check_command(message,username):
     #         else: pass
     #     else: pass
     else: pass
+    return False
 
 # #check which key to return
 # def check_key(rating,command):
