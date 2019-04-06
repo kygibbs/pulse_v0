@@ -35,17 +35,17 @@ def receive_message():
                     datetime = str(message['timestamp'])
                     m = message['message']['text']
 
-                    update_messages(username,m,datetime)
-
-                    #check if message has rating and update rating db if so
-                    rating = check_rating(m,username,datetime)
-                    command = check_command(m,username)
-
                     # key = check_key(rating,command)
                     if len(User.query.filter_by(user=str(recipient_id)).with_entities(User.name).first())>0:
                         Proliferate(recipient_id,m)
                     else:
                         bot.send_text_message(recipient_id,"please add a username with 'set name'")
+
+                    update_messages(username,m,datetime)
+
+                    #check if message has rating and update rating db if so
+                    rating = check_rating(m,username,datetime)
+                    command = check_command(m,username)
 
 
                     # response_sent_text = get_message(key)
@@ -57,12 +57,13 @@ def receive_message():
                     for event in message['message']['attachments']:
                         m = event['payload']['url']
                         type = event['type']
-                        update_messages(username,m,datetime)
+
                         if len(User.query.filter_by(user=str(recipient_id)).with_entities(User.name).first())>0:
                             Proliferate(recipient_id,m,type=type)
                         else:
                             bot.send_text_message(recipient_id,"please add a username with 'set name'")
 
+                        update_messages(username,m,datetime)
                     # response_sent_nontext = get_message(4)
                     # send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
@@ -179,7 +180,7 @@ def check_rating(message,username,datetime):
 def Proliferate(recipient_id,response,type=None):
     sender = User.query.filter_by(user=recipient_id).with_entities(User.name).first()[0]
     for user in User.query.all():
-        if user.user == recipient_id:
+        if user.user != recipient_id:
             if type == None:
                 message = "{}: {}".format(sender,response)
                 bot.send_text_message(user.user,message)
