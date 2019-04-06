@@ -30,42 +30,43 @@ def receive_message():
           for message in messaging:
             if message.get('message'):
                 recipient_id = message['sender']['id']
-                if message['message'].get('text'):
-                    username = str(recipient_id)
-                    datetime = str(message['timestamp'])
-                    m = message['message']['text']
+                if recipient_id != None:
+                    if message['message'].get('text'):
+                        username = str(recipient_id)
+                        datetime = str(message['timestamp'])
+                        m = message['message']['text']
 
-                    # key = check_key(rating,command)
-                    if len(User.query.filter_by(user=str(recipient_id)).all()))>0:
-                        Proliferate(recipient_id,m)
-                    else:
-                        bot.send_text_message(recipient_id,"please add a username with 'set name'")
-
-                    update_messages(username,m,datetime)
-
-                    #check if message has rating and update rating db if so
-                    rating = check_rating(m,username,datetime)
-                    command = check_command(m,username)
-
-
-                    # response_sent_text = get_message(key)
-                    # send_message(recipient_id, response_sent_text)
-                #if user sends us a GIF, photo,video, or any other non-text item
-                if message['message'].get('attachments'):
-                    username = str(recipient_id)
-                    datetime = str(message['timestamp'])
-                    for event in message['message']['attachments']:
-                        m = event['payload']['url']
-                        type = event['type']
-
-                        if len(User.query.filter_by(user=str(recipient_id)).all())>0:
-                            Proliferate(recipient_id,m,type=type)
+                        # key = check_key(rating,command)
+                        if len(User.query.filter_by(user=str(recipient_id)).all()))>0:
+                            Proliferate(recipient_id,m)
                         else:
                             bot.send_text_message(recipient_id,"please add a username with 'set name'")
 
                         update_messages(username,m,datetime)
-                    # response_sent_nontext = get_message(4)
-                    # send_message(recipient_id, response_sent_nontext)
+
+                        #check if message has rating and update rating db if so
+                        rating = check_rating(m,username,datetime)
+                        command = check_command(m,username)
+
+
+                        # response_sent_text = get_message(key)
+                        # send_message(recipient_id, response_sent_text)
+                    #if user sends us a GIF, photo,video, or any other non-text item
+                    if message['message'].get('attachments'):
+                        username = str(recipient_id)
+                        datetime = str(message['timestamp'])
+                        for event in message['message']['attachments']:
+                            m = event['payload']['url']
+                            type = event['type']
+
+                            if len(User.query.filter_by(user=str(recipient_id)).all())>0:
+                                Proliferate(recipient_id,m,type=type)
+                            else:
+                                bot.send_text_message(recipient_id,"please add a username with 'set name'")
+
+                            update_messages(username,m,datetime)
+                        # response_sent_nontext = get_message(4)
+                        # send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
 
 
