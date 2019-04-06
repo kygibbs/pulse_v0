@@ -30,7 +30,6 @@ def receive_message():
           for message in messaging:
             if message.get('message'):
                 recipient_id = message['sender']['id']
-                if recipient_id != None:
                     if message['message'].get('text'):
                         username = str(recipient_id)
                         datetime = str(message['timestamp'])
