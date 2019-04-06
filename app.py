@@ -29,8 +29,8 @@ def receive_message():
           messaging = event['messaging']
           for message in messaging:
             if message.get('message'):
-
                 recipient_id = message['sender']['id']
+                sender_name = User.query.filter_by(user=recipient_id).with_entities(User.name).first()
                 if message['message'].get('text'):
                     username = str(recipient_id)
                     datetime = str(message['timestamp'])
@@ -42,20 +42,24 @@ def receive_message():
                     rating = check_rating(m,username,datetime)
                     command = check_command(m,username)
 
-                    key = check_key(rating,command)
+                    # key = check_key(rating,command)
+                    Proliferate(sender_name,response)
 
-                    response_sent_text = get_message(key)
-                    send_message(recipient_id, response_sent_text)
+
+                    # response_sent_text = get_message(key)
+                    # send_message(recipient_id, response_sent_text)
                 #if user sends us a GIF, photo,video, or any other non-text item
                 if message['message'].get('attachments'):
                     username = str(recipient_id)
                     datetime = str(message['timestamp'])
-                    m = message['message']['attachments'][0]['payload']['url']
+                    for event in message['message']['attachments']:
+                        m = event['payload']['url']
+                        type = event['type']
+                        update_messages(username,m,datetime)
+                        Proliferate(sender_name,response,type=type)
 
-                    update_messages(username,m,datetime)
-
-                    response_sent_nontext = get_message(4)
-                    send_message(recipient_id, response_sent_nontext)
+                    # response_sent_nontext = get_message(4)
+                    # send_message(recipient_id, response_sent_nontext)
     return "Message Processed"
 
 
@@ -64,37 +68,38 @@ def check_command(message,username):
     length = len(message)
     if length > len('set name'):
         if (message[:8]=='set name'):
-            if (User.query.filter_by(user=username).count()==0):
-                nickname = message[9:]
-                update_username(nickname,username)
-                return True
-            else: pass
+            nickname = message[9:]
+            update_username(nickname,username)
+            return True
         else: pass
-    if length > len('tune in'):
-        if (message[:7]=='tune in'):
-            friend = message[8:]
-            if (Follower.query.filter_by(user=username).filter_by(followed_nickname=friend).count()==0):
-                update_followers(friend,username)
-                return True
-            else: pass
-        else: pass
+    # if length > len('tune in'):
+    #     if (message[:7]=='tune in'):
+    #         friend = message[8:]
+    #         if (Follower.query.filter_by(user=username).filter_by(followed_nickname=friend).count()==0):
+    #             update_followers(friend,username)
+    #             return True
+    #         else: pass
+    #     else: pass
     else: pass
     return False
 
-#check which key to return
-def check_key(rating,command):
-    if rating == True:
-        return 1
-    if command == True:
-        return 3
-    else: return 2
+# #check which key to return
+# def check_key(rating,command):
+#     if rating == True:
+#         return 1
+#     if command == True:
+#         return 3
+#     else: return 2
 
 #update username in database
 def update_username(nickname,username):
-    user_update = User(user=username,name=nickname)
-
-    db.session.add(user_update)
-    db.session.commit()
+    if len(User.query.filter_by(user=username).all())>0:
+        User.query.filter_by(user=username).update(dict(name=nickname)))
+        db.session.commit()
+    else:
+        user_update = User(user=username,name=nickname)
+        db.session.add(user_update)
+        db.session.commit()
 
 #verify facebook token upon GET request
 def verify_fb_token(token_sent):
@@ -142,15 +147,30 @@ def check_rating(message,username,datetime):
     return False
 
 #chooses a message to the user depending on what they sent before
-def get_message(key):
-    message_dict = {1:"Thanks for sharing", 2:"Interesting", 3:"Thanks! Love that name!",4:"Oh la la!"}
-    return message_dict[key]
+# def get_message(key):
+#     message_dict = {1:"Thanks for sharing", 2:"Interesting", 3:"Thanks! Love that name!",4:"Oh la la!"}
+#     return message_dict[key]
 
-#uses PyMessenger to send response to user
-def send_message(recipient_id, response):
-    #sends user the text message provided via input response parameter
-    bot.send_text_message(recipient_id, response)
-    return "success"
+def Proliferate(sender_name,response,type=None):
+    for user in User.query.all()
+        if user.user != recipient_id:
+            if type == None:
+                message = "{}: {}".format(sender,response)
+                bot.send_text_message(user.user,message)
+            else:
+                message_1 = "{}: ".format(sender)
+                bot.send_text_message(user.user,message_1)
+                bot.send_attachment_url(user.user,type,response)
+
+
+# #uses PyMessenger to send response to user
+# def send_message(recipient_id, response):
+#     if len(User.query.filter_by(user=recipient_id).with_entities(User.name).first()) >=1:
+#         bot.send_text_message(recipient_id, response)
+#         Proliferate(recipient_id,response)
+#     else:
+#
+#     return "success"
 
 if __name__ == "__main__":
     app.run()
