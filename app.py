@@ -30,7 +30,6 @@ def receive_message():
           for message in messaging:
             if message.get('message'):
                 recipient_id = message['sender']['id']
-                sender_name = User.query.filter_by(user=recipient_id).with_entities(User.name).first()
                 if message['message'].get('text'):
                     username = str(recipient_id)
                     datetime = str(message['timestamp'])
@@ -43,7 +42,7 @@ def receive_message():
                     command = check_command(m,username)
 
                     # key = check_key(rating,command)
-                    Proliferate(sender_name,m)
+                    Proliferate(recipient_id,m)
 
 
                     # response_sent_text = get_message(key)
@@ -56,7 +55,7 @@ def receive_message():
                         m = event['payload']['url']
                         type = event['type']
                         update_messages(username,m,datetime)
-                        Proliferate(sender_name,m,type=type)
+                        Proliferate(recipient_id,m,type=type)
 
                     # response_sent_nontext = get_message(4)
                     # send_message(recipient_id, response_sent_nontext)
@@ -151,7 +150,8 @@ def check_rating(message,username,datetime):
 #     message_dict = {1:"Thanks for sharing", 2:"Interesting", 3:"Thanks! Love that name!",4:"Oh la la!"}
 #     return message_dict[key]
 
-def Proliferate(sender_name,response,type=None):
+def Proliferate(recipient_id,response,type=None):
+    sender = User.query.filter_by(user=recipient_id).with_entities(User.name).first()
     for user in User.query.all():
         if user.user != recipient_id:
             if type == None:
