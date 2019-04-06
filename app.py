@@ -42,7 +42,7 @@ def receive_message():
                     command = check_command(m,username)
 
                     # key = check_key(rating,command)
-                    if len(User.query.filter_by(user=recipient_id).with_entities(User.name).first())>0:
+                    if len(User.query.filter_by(user=str(recipient_id)).with_entities(User.name).first())>0:
                         Proliferate(recipient_id,m)
                     else:
                         bot.send_text_message(recipient_id,"please add a username with 'set name'")
@@ -58,7 +58,7 @@ def receive_message():
                         m = event['payload']['url']
                         type = event['type']
                         update_messages(username,m,datetime)
-                        if len(User.query.filter_by(user=recipient_id).with_entities(User.name).first())>0:
+                        if len(User.query.filter_by(user=str(recipient_id)).with_entities(User.name).first())>0:
                             Proliferate(recipient_id,m,type=type)
                         else:
                             bot.send_text_message(recipient_id,"please add a username with 'set name'")
