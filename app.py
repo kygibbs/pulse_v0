@@ -43,7 +43,7 @@ def receive_message():
                     command = check_command(m,username)
 
                     # key = check_key(rating,command)
-                    Proliferate(sender_name,response)
+                    Proliferate(sender_name,m)
 
 
                     # response_sent_text = get_message(key)
@@ -56,7 +56,7 @@ def receive_message():
                         m = event['payload']['url']
                         type = event['type']
                         update_messages(username,m,datetime)
-                        Proliferate(sender_name,response,type=type)
+                        Proliferate(sender_name,m,type=type)
 
                     # response_sent_nontext = get_message(4)
                     # send_message(recipient_id, response_sent_nontext)
