@@ -180,7 +180,7 @@ def check_rating(message,username,datetime):
 def Proliferate(recipient_id,response,type=None):
     sender = User.query.filter_by(user=recipient_id).with_entities(User.name).first()[0]
     for user in User.query.all():
-        if user.user != recipient_id:
+        if user.user == recipient_id:
             if type == None:
                 message = "{}: {}".format(sender,response)
                 bot.send_text_message(user.user,message)
