@@ -94,7 +94,7 @@ def check_command(message,username):
 #update username in database
 def update_username(nickname,username):
     if len(User.query.filter_by(user=username).all())>0:
-        User.query.filter_by(user=username).update(dict(name=nickname)))
+        User.query.filter_by(user=username).update(dict(name=nickname))
         db.session.commit()
     else:
         user_update = User(user=username,name=nickname)
