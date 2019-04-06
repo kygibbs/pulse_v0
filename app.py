@@ -42,7 +42,10 @@ def receive_message():
                     command = check_command(m,username)
 
                     # key = check_key(rating,command)
-                    Proliferate(recipient_id,m)
+                    if len(User.query.filter_by(user=recipient_id).with_entities(User.name).first())>0:
+                        Proliferate(recipient_id,m)
+                    else:
+                        bot.send_text_message(recipient_id,"please add a username with 'set name'")
 
 
                     # response_sent_text = get_message(key)
@@ -55,7 +58,10 @@ def receive_message():
                         m = event['payload']['url']
                         type = event['type']
                         update_messages(username,m,datetime)
-                        Proliferate(recipient_id,m,type=type)
+                        if len(User.query.filter_by(user=recipient_id).with_entities(User.name).first())>0:
+                            Proliferate(recipient_id,m,type=type)
+                        else:
+                            bot.send_text_message(recipient_id,"please add a username with 'set name'")
 
                     # response_sent_nontext = get_message(4)
                     # send_message(recipient_id, response_sent_nontext)
@@ -65,12 +71,32 @@ def receive_message():
 #checks if the message is a command
 def check_command(message,username):
     length = len(message)
+    self_name = User.query.filter_by(user=username).with_entities(User.name).first()[0]
+    #SET NAME
     if length > len('set name'):
         if (message[:8]=='set name'):
             nickname = message[9:]
             update_username(nickname,username)
             return True
         else: pass
+    #GET NAMES
+    # if length > len('get names'):
+    #     if (message[:9]=='get names'):
+    #         users = User.query.with_entities(User.name).all()
+    #         message = [str(str(user[0])+" | ") for user in users]
+    #         bot.send_text_message(username,message)
+    #     else: pass
+    # #HOW ARE YOU?
+    # if length > len('hay'):
+    #     if (message[:3].lower()=='hay'):
+    #         friend = message[4:]
+    #         if len(User.query.filter_by(name=friend).all()) >0:
+    #             friend_id = User.query.filter_by(name=friend).with_entities(User.user).first()[0]
+    #             message = "{}: How are you?"
+    #             bot.send_text_message(friend_id,message)
+    #         else:
+    #             pass
+    #     else: pass
     # if length > len('tune in'):
     #     if (message[:7]=='tune in'):
     #         friend = message[8:]
@@ -80,7 +106,6 @@ def check_command(message,username):
     #         else: pass
     #     else: pass
     else: pass
-    return False
 
 # #check which key to return
 # def check_key(rating,command):
