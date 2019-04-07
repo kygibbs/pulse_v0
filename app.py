@@ -77,7 +77,7 @@ def check_command(message,username):
     #self_name = User.query.filter_by(user=username).with_entities(User.name).first()[0]
     #SET NAME
     if length > len('set name'):
-        if (message[:8]=='set name'):
+        if (message.lower()[:8]=='set name'):
             nickname = message[9:]
             update_username(nickname,username)
             return True
