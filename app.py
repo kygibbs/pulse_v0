@@ -2,7 +2,7 @@
 import random
 from flask import Flask, request
 from flask_sqlalchemy import SQLAlchemy
-from pymessenger.bot import Bot
+from pymessenger2.bot import Bot
 import os
 
 app = Flask(__name__)
